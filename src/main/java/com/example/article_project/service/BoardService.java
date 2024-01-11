@@ -2,6 +2,8 @@ package com.example.article_project.service;
 
 
 import com.example.article_project.entity.Board;
+import com.example.article_project.entity.BoardOfList;
+import com.example.article_project.repo.BoardOfListRepository;
 import com.example.article_project.repo.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,16 +15,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardService{
     private final BoardRepository boardRepository;
-
+    private final BoardOfListRepository boardOfListRepository;
     public void create(
             String title,
             String password,
-            String contents
+            String contents,
+            Long boardOfListId
     ) {
         Board board = new Board();
         board.setBoardTitle(title);
         board.setBoardPassword(password);
         board.setBoardContents(contents);
+
+        Optional<BoardOfList> optionalBoardOfList
+                = boardOfListRepository.findById(boardOfListId);
+
+        board.setBoardList(optionalBoardOfList.orElse(null));
         boardRepository.save(board);
     }
 

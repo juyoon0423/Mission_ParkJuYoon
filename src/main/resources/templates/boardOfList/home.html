@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+  <meta charset="UTF-8">
+  <title>home</title>
+</head>
+<body>
+<h1>BoardOfList</h1>
+<div th:if="${ofList.isEmpty()}">
+  <p>No Article Here...</p>
+</div>
+<div th:unless="${ofList.isEmpty()}" th:each="boardOfList: ${ofList}">
+  <p>[[${boardOfList.id}]] <a th:href="@{/boardOfList/{id}(id=${boardOfList.id})}">[[${boardOfList.listOfArticle}]]</a></p>
+</div>
+<br>
+<a href="/">home</a>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.example.article_project;
 
 import com.example.article_project.dto.CommentDTO;
 import com.example.article_project.entity.Board;
+import com.example.article_project.service.BoardOfListService;
 import com.example.article_project.service.BoardService;
 import com.example.article_project.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +18,21 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
+    private final BoardOfListService boardOfListService;
 
 
     @GetMapping("/save")
-    public String saveForm() {
+    public String saveForm(Model model) {
+        model.addAttribute("boardOfList", boardOfListService.readBoardOfListAll());
         return "save";
     }
 
     @PostMapping("/save")
     public String save(@RequestParam("boardTitle") String title,
                        @RequestParam("boardPassword") String password,
-                       @RequestParam("boardContents") String contents) {
-        boardService.create(title, password, contents);
+                       @RequestParam("boardContents") String contents,
+                       @RequestParam("boardList-id") Long boardOfListId) {
+        boardService.create(title, password, contents, boardOfListId);
         return "redirect:/board/";
     }
 
