@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+  <meta charset="UTF-8">
+  <title>list</title>
+</head>
+<body>
+<h1>Article List</h1>
+<div th:if="${boardList.isEmpty()}">
+  <p>No Article Here</p>
+</div>
+<div th:unless="${boardList.isEmpty()}" th:each="board: ${boardList}">
+  <p>[[${board.id}]]. <a th:href="@{/board/{id}(id=${board.id})}">[[${board.BoardTitle}]]</a></p>
+</div>
+<!--<a href="/board/save">글 생성</a>-->
+<button onclick="saveReq()">글쓰기</button>
+</body>
+<script>
+    const saveReq = () => {
+        location.href = "/board/save";
+    }
+</script>
+</html>
