@@ -3,11 +3,13 @@ package com.example.article_project.service;
 import com.example.article_project.dto.CommentDTO;
 import com.example.article_project.entity.Board;
 import com.example.article_project.entity.CommentEntity;
-import com.example.article_project.repo.BoardRepository;
-import com.example.article_project.repo.CommentRepository;
+import com.example.article_project.repository.BoardRepository;
+import com.example.article_project.repository.CommentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,5 +41,13 @@ public class CommentService {
             commentDTOList.add(commentDTO);
         }
         return commentDTOList;
+    }
+
+    @Transactional
+    public CommentDTO delete(Long id) {
+        CommentEntity target = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("댓글 삭제 실패!, 대상 댓글이 없습니다"));
+        commentRepository.delete(target);
+        return CommentDTO.toCommentDTO(target, id);
     }
 }

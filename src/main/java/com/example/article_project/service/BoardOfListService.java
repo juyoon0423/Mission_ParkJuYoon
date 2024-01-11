@@ -1,7 +1,7 @@
 package com.example.article_project.service;
 
 import com.example.article_project.entity.BoardOfList;
-import com.example.article_project.repo.BoardOfListRepository;
+import com.example.article_project.repository.BoardOfListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

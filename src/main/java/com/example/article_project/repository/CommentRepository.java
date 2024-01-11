@@ -1,4 +1,4 @@
-package com.example.article_project.repo;
+package com.example.article_project.repository;
 
 import com.example.article_project.entity.Board;
 import com.example.article_project.entity.CommentEntity;

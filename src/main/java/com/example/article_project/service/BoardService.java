@@ -3,8 +3,8 @@ package com.example.article_project.service;
 
 import com.example.article_project.entity.Board;
 import com.example.article_project.entity.BoardOfList;
-import com.example.article_project.repo.BoardOfListRepository;
-import com.example.article_project.repo.BoardRepository;
+import com.example.article_project.repository.BoardOfListRepository;
+import com.example.article_project.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

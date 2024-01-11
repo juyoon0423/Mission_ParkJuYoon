@@ -15,5 +15,6 @@ public class BoardOfList {
     private String listOfArticle;
 
     @OneToMany(mappedBy = "boardList")
+    @OrderBy("id DESC")
     private List<Board> inBoard;
 }

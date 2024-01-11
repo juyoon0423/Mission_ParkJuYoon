@@ -1,7 +1,8 @@
-package com.example.article_project;
+package com.example.article_project.controller;
 
 import com.example.article_project.dto.CommentDTO;
 import com.example.article_project.entity.Board;
+import com.example.article_project.repository.BoardRepository;
 import com.example.article_project.service.BoardOfListService;
 import com.example.article_project.service.BoardService;
 import com.example.article_project.service.CommentService;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final BoardRepository boardRepository;
     private final CommentService commentService;
     private final BoardOfListService boardOfListService;
 
@@ -38,7 +40,8 @@ public class BoardController {
 
     @GetMapping("/")
     public String findAll(Model model) {
-        List<Board> boardList = boardService.findAll();
+//        List<Board> boardList = boardService.findAll();
+        List<Board> boardList = boardRepository.findAllByOrderByIdDesc();
         model.addAttribute("boardList", boardList);
         return "list";
     }
@@ -74,18 +77,32 @@ public class BoardController {
             @RequestParam("contents")
             String contents,
             @RequestParam("password")
-            String password
+            String password,
+            @ModelAttribute Board board
     ) {
-        boardService.update(
-                id, title, contents, password);
-        return String.format("redirect:/board/%d", id);
+        Board article = boardRepository.findById(id).orElse(null);
+        if (article != null && article.getBoardPassword().equals(password)){
+            boardService.update(
+                    id, title, contents, password);
+            return String.format("redirect:/board/%d", id);
+        } else {
+            return "/error-page";
+        }
     }
 
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable("id") Long id) {
-        boardService.delete(id);
-        return "redirect:/board/";
+    public String delete(@PathVariable("id") Long id,
+                         @RequestParam("delePassword")
+                         String password,
+                         @ModelAttribute Board board) {
+        Board deleBoard = boardRepository.findById(id).orElse(null);
+        if (deleBoard != null && deleBoard.getBoardPassword().equals(password)){
+            boardService.delete(id);
+            return "redirect:/board/";
+        } else {
+            return "/error-page";
+        }
     }
 
 

@@ -14,7 +14,7 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @Column(length = 20, nullable = false)
+    @Column(name = "commentPassword")
     private String commentWriter;
 
     @Column

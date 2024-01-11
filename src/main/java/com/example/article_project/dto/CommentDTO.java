@@ -14,6 +14,7 @@ public class CommentDTO {
     private String commentContents;
     private Long boardId;
 
+
     public static CommentDTO toCommentDTO(CommentEntity commentEntity, Long boardId) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setId(commentEntity.getId());
