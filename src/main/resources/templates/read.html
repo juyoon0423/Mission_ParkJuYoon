@@ -31,8 +31,7 @@
 <div id="comment-list" onclick="handleDelete(event)">
   <table>
     <tr>
-      <th>댓글번호</th>
-      <th>내용</th>
+      <th>댓글 내용</th>
       <th>삭제</th>
     </tr>
     <tr th:each="comment: ${commentList}">
@@ -49,7 +48,7 @@
     const commentWrite = () => {
         const writer = document.getElementById("commentWriter").value;
         const contents = document.getElementById("commentContents").value;
-        const id = [[${boardList.id}]];
+        const boardId = [[${boardList.id}]];
 
         $.ajax({
             type: "post",
@@ -57,28 +56,16 @@
             data: {
                 "commentWriter": writer,
                 "commentContents": contents,
-                "boardId": id
+                "boardId": boardId
             },
             success: function (res) {
-                console.log("요청성공", res);
-                let output = "<table>";
-                output += "<tr><th>댓글번호</th>";
-                output += "<th>내용</th>";
-                output += "<th>삭제</th></tr>";
-                for (let i in res) {
-                    output += "<tr>";
-                    output += "<td>" + res[i].id + "</td>";
-                    output += "<td>" + res[i].commentContents + "</td>";
-                    output += "<td><button onclick='deleteComment(" + res[i].id + ")'>삭제</button></td>";
-                    output += "</tr>";
-                }
-                output += "</table>";
-                document.getElementById('comment-list').innerHTML = output;
-                document.getElementById('commentWriter').value = '';
-                document.getElementById('commentContents').value = '';
+                console.log("댓글 작성 성공", res);
+                updateCommentList(res);
+                clearCommentInputs();
             },
-            error: function (err) {
-                console.log("요청실패", err);
+            error: function (xhr, status, error) {
+                console.error("댓글 작성 실패", error);
+                // 사용자에게 메시지 표시 또는 추가 처리 가능
             }
         });
     }
@@ -88,44 +75,65 @@
             deleteComment(commentId);
         }
     };
+    const clearCommentInputs = () => {
+        document.getElementById('commentWriter').value = '';
+        document.getElementById('commentContents').value = '';
+    }
     const deleteComment = (commentId) => {
         const password = prompt("댓글을 삭제하려면 작성 시 입력한 비밀번호를 입력하세요:");
-        if (password !== null) {
-            $.ajax({
-                type: "post",
-                url: "/comment/delete/" + commentId,
-                data: {
-                    "password": password
-                },
-                success: function (res) {
-                    console.log("댓글 삭제 요청 성공", res);
-                    updateCommentList(res);
-                },
-                error: function (err) {
-                    console.log("댓글 삭제 요청 실패", err);
-                }
-            });
+        if (password === null) {
+            return;
         }
+        $.ajax({
+            type: "post",
+            url: "/comment/delete/" + commentId,
+            data: {
+                "password": password
+            },
+            success: function (res) {
+                console.log("댓글 삭제 성공", res);
+                updateCommentList(res);
+            },
+            error: function (xhr, status, error) {
+                console.error("댓글 삭제 실패", error);
+            }
+        });
     }
 
     const updateCommentList = (comments) => {
         let output = "<table>";
-        output += "<tr><th>댓글번호</th>";
-        output += "<th>내용</th>";
+        output += "<th>댓글 내용</th>";
         output += "<th>삭제</th></tr>";
 
-        if (Array.isArray(comments) && comments.length > 0) {
-            comments.forEach(comment => {
-                output += "<tr>";
-                output += "<td>" + comment.id + "</td>";
-                output += "<td>" + comment.commentContents + "</td>";
-                output += "<td><button onclick='deleteComment(" + comment.id + ")'>삭제</button></td>";
-                output += "</tr>";
-            });
-        }
+        comments.forEach(comment => {
+            output += "<tr>";
+            output += `<td>${comment.commentContents}</td>`;
+            output += `<td><button onclick="deleteComment(${comment.id})">삭제</button></td>`;
+            output += "</tr>";
+        });
 
         output += "</table>";
         document.getElementById('comment-list').innerHTML = output;
     }
+
+    const getCommentList = () => {
+        const boardId = [[${boardList.id}]];
+        $.ajax({
+            type: "get",
+            url: "/comment/list/" + boardId,
+            success: function (res) {
+                console.log("댓글 목록 가져오기 성공", res);
+                updateCommentList(res);
+            },
+            error: function (xhr, status, error) {
+                console.error("댓글 목록 가져오기 실패", error);
+                // 사용자에게 메시지 표시 또는 추가 처리 가능
+            }
+        });
+    };
+
+    $(document).ready(function () {
+        getCommentList();
+    });
 </script>
 </html>

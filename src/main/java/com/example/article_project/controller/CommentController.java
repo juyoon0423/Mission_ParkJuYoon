@@ -41,8 +41,10 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(deleteDto);
     }
 
+    ;
+
     @PostMapping("/delete/{id}")
-    public ResponseEntity<List<CommentEntity>> deleteComment(
+    public ResponseEntity<List<CommentDTO>> deleteComment(
             @PathVariable("id") Long id,
             @RequestParam("password") String password
     ) {
@@ -61,8 +63,7 @@ public class CommentController {
         if (board == null) {
             return ResponseEntity.notFound().build();
         }
-
-        List<CommentEntity> updatedComments = commentRepository.findAllByBoardOrderByIdDesc(board);
+        List<CommentDTO> updatedComments = commentService.findAll(board.getId());
         return ResponseEntity.ok(updatedComments);
     }
 }

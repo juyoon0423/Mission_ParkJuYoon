@@ -6,6 +6,10 @@ import com.example.article_project.entity.BoardOfList;
 import com.example.article_project.repository.BoardOfListRepository;
 import com.example.article_project.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,5 +60,15 @@ public class BoardService{
 
     public void delete(Long id) {
         boardRepository.deleteById(id);
+    }
+
+    public Page<Board> paging(Pageable pageable) {
+        int page = pageable.getPageNumber() -1 ;
+        int pageLimit = 3; // 한 페이지에 몇개의 게시글 볼건지
+        Page<Board> boardEntities =
+        boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC,"id")));
+
+        Page<Board> boards = boardEntities.map(board -> new Board());
+        return boards;
     }
 }
